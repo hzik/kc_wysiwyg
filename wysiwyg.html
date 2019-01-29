@@ -127,7 +127,7 @@
             }
         }
       
-        function setupWysiwyg(value) {
+        function setupWysiwyg(value,rtl) {
             var quill = new Quill('#editor-container', {
 								modules: {
 								  formula: true,
@@ -138,6 +138,9 @@
 								theme: 'snow'
 							  });
 			quill.setContents(JSON.parse(value));
+			if (rtl) {
+				$(".ql-editor p").css("direction","rtl").css("text-align","right");
+			}
 			
 			quill.on('text-change', function(delta, oldDelta, source) {
 				if (!isDisabled) {
@@ -157,8 +160,9 @@
         function initCustomElement() {
             try {
                 CustomElement.init((element, _context) => {
+				  var rtl = (element.config?element.config.rtl:false);
                   // Setup with initial value and disabled state
-                  setupWysiwyg(element.value);  
+                  setupWysiwyg(element.value, rtl);  
                   updateDisabled(element.disabled);
                   updateSize();
                 });
