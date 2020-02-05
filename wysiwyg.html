@@ -30,6 +30,10 @@
             top: 0 !important;
             left: 0 !important;
         }
+		
+		#editor-container {
+			height: 400px;
+		}
       
         .disabled_overlay {
             position: fixed;
@@ -87,9 +91,7 @@
 				</span>
 				<span class="ql-formats">
 				  <button class="ql-link"></button>
-				  <button class="ql-image"></button>
-				  <button class="ql-video"></button>
-				  <button class="ql-formula"></button>
+				  <button id="assets" title="Insert image">đź–Ľď¸Ź</button>
 				</span>
 				<span class="ql-formats">
 				  <button class="ql-clean"></button>
@@ -141,6 +143,7 @@
 			if (rtl) {
 				$(".ql-editor p").css("direction","rtl").css("text-align","right");
 			}
+			$(".ql-container").css("min-height","100px");
 			
 			quill.on('text-change', function(delta, oldDelta, source) {
 				if (!isDisabled) {
@@ -149,13 +152,38 @@
 					updateSize();
                 }
 			});
+			$("#assets").click(function(e) {				
+				insertImage(quill);
+			});
+			setTimeout(updateSize,1000);
         }
       
+        async function insertImage(quill) {
+			// Opens an asset selection dialog in Kontent
+			const assets = await CustomElement.selectAssets({
+				allowMultiple: false,
+				fileType: 'images'
+			});
+			// Gets an ID of the first selected asset
+			const assetId = assets[0].id;
+			// Retrieves details of the asset specified by its ID
+			const assetDetails = await CustomElement.getAssetDetails([assetId]);
+
+			console.log(assetDetails);
+			var range = quill.getSelection();
+			quill.insertEmbed((range?range.index:0), 'image', assetDetails[0].url);
+			updateSize();
+		}
+      
         function updateSize() {
-            // Update the Custom element height in the Kentico Cloud UI
-            const height = $("html").height();
-            CustomElement.setHeight(height);
-        }
+			var height = 300;
+			try {
+				height = parseInt($("html").height());		
+			} catch (err) {
+				console.error(err);
+			}
+			CustomElement.setHeight(height);
+		}
       
         function initCustomElement() {
             try {
