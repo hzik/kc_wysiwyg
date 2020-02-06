@@ -31,6 +31,13 @@
             left: 0 !important;
         }
 		
+        .item {
+			border: 2px solid grey;
+			font-weight:bold;
+			padding:10px;
+			margin:10px;
+        }
+		
 		#editor-container {
 			height: 400px;
 		}
@@ -92,6 +99,7 @@
 				<span class="ql-formats">
 				  <button class="ql-link"></button>
 				  <button id="assets" title="Insert image">🖼️</button>
+				  <button id="items" title="Insert item">📝</button>
 				</span>
 				<span class="ql-formats">
 				  <button class="ql-clean"></button>
@@ -116,7 +124,24 @@
 </script>
 
     <!-- Custom logic of the Custom element -->
-    <script>
+    <script>	
+		let BlockEmbed = Quill.import('blots/block/embed');			
+		class Item extends BlockEmbed {
+		  static create(codename) {
+			let node = super.create();
+			node.dataset.codename = codename;
+			node.innerHTML = "Linked item: "+codename;
+			return node;
+		  }
+		  static value(domNode) {
+			return domNode.dataset.codename;
+		  }
+		}
+		Item.blotName = 'item';
+		Item.tagName = 'div';
+		Item.className = 'item';
+		Quill.register(Item);
+				
         var isDisabled = false;
       
         function updateDisabled(disabled) {
@@ -155,6 +180,9 @@
 			$("#assets").click(function(e) {				
 				insertImage(quill);
 			});
+			$("#items").click(function(e) {				
+				insertItem(quill);
+			});
 			setTimeout(updateSize,1000);
         }
       
@@ -172,6 +200,25 @@
 			console.log(assetDetails);
 			var range = quill.getSelection();
 			quill.insertEmbed((range?range.index:0), 'image', assetDetails[0].url);
+			updateSize();
+		}
+      
+        async function insertItem(quill) {
+			// Opens an asset selection dialog in Kontent
+			const items = await CustomElement.selectItems({
+				allowMultiple: false
+			});
+			// Gets an ID of the first selected asset
+			const itemId = items[0].id;
+			// Retrieves details of the asset specified by its ID
+			const itemDetails = await CustomElement.getItemDetails([itemId]);
+
+			console.log(itemDetails);
+			var range = quill.getSelection();
+			var index = range?range.index:0;
+			quill.insertText(index, '\n', Quill.sources.USER);
+			quill.insertEmbed(index + 1, 'item', itemDetails[0].codename, Quill.sources.USER);
+			quill.setSelection(index + 2, Quill.sources.SILENT);
 			updateSize();
 		}
       
