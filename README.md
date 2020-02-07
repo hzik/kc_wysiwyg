@@ -2,7 +2,7 @@
 This Kontent custom element is based on the https://quilljs.com/ rich text editor.
 It stores content in JSON format, so it's omni-channel friendly :)
 
-![screenshot](https://amend.cz/wysiwyg/wysiwyg.png)
+![screenshot](https://amend.cz/wysiwyg/quill.png)
 
 ## Quick Setup (for testing)
 
