@@ -29,14 +29,36 @@ For RTL support specify the Parameters {JSON} part of the configuration with:
 The JSON object returned from the Deliver API matches the following signature:
 
 ```Json
-{ 
+{
    "ops":[ 
       { 
-         "insert":"Hello Wrold!\n"
+         "attributes":{ 
+            "size":"huge"
+         },
+         "insert":"Hello World!"
+      },
+      { 
+         "insert":"\n"
       },
       { 
          "insert":{ 
-            "image":"https://somedomain/someimage.png"
+            "item":"testing_name;e8015d16-61f9-41d4-ab30-fec7b910ff0d;testing name"
+         }
+      },
+      { 
+         "attributes":{ 
+            "underline":true,
+            "color":"#e60000",
+            "bold":true
+         },
+         "insert":"Image asset:"
+      },
+      { 
+         "insert":"\n"
+      },
+      { 
+         "insert":{ 
+            "image":"https://assets-us-01.kc-usercontent.com/1f33698f-a270-4b2d-90c5-9658a99c3140/327d63ce-c56f-4e86-950d-dd0747470660/f6e49c5bb987a4a1b11e2d344f58d745.jpg"
          }
       },
       { 
