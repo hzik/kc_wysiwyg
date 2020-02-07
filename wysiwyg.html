@@ -32,10 +32,26 @@
         }
 		
         .item {
-			border: 2px solid grey;
+			border: 2px solid #CCC;
 			font-weight:bold;
-			padding:10px;
 			margin:10px;
+			display: flex;
+			cursor: not-allowed;			
+			background-color:#E7E7E7;	
+			color:#333;
+			border-radius: 4px;
+        }
+		
+        .item-link a {
+			text-decoration:none !important;
+			font-size:1.5em;
+			padding-right:5px;
+			cursor: pointer;
+        }
+		
+        .item-name {
+			padding:10px;
+			width:100%;
         }
 		
 		#editor-container {
@@ -125,16 +141,20 @@
 
     <!-- Custom logic of the Custom element -->
     <script>	
+		let projectID = '';
+		let cultureID = '';
+	
 		let BlockEmbed = Quill.import('blots/block/embed');			
 		class Item extends BlockEmbed {
-		  static create(codename) {
-			let node = super.create();
-			node.dataset.codename = codename;
-			node.innerHTML = "Linked item: "+codename;
+		  static create(item) {
+			let node = super.create(item);
+			node.dataset.item = item;
+			let data = item.split(';');
+			node.innerHTML = '<div class="item-name">'+data[2]+'</div><div class="item-link"><a title="Open item" onclick="window.open(this.href)" href="https://app.kontent.ai/'+projectID+'/content-inventory/'+cultureID+'/content/'+data[1]+'">⭷</a></div>';
 			return node;
 		  }
 		  static value(domNode) {
-			return domNode.dataset.codename;
+			return domNode.dataset.item;
 		  }
 		}
 		Item.blotName = 'item';
@@ -217,7 +237,7 @@
 			var range = quill.getSelection();
 			var index = range?range.index:0;
 			quill.insertText(index, '\n', Quill.sources.USER);
-			quill.insertEmbed(index + 1, 'item', itemDetails[0].codename, Quill.sources.USER);
+			quill.insertEmbed(index + 1, 'item', itemDetails[0].codename+";"+itemDetails[0].id+";"+itemDetails[0].name, Quill.sources.USER);			
 			quill.setSelection(index + 2, Quill.sources.SILENT);
 			updateSize();
 		}
@@ -235,6 +255,8 @@
         function initCustomElement() {
             try {
                 CustomElement.init((element, _context) => {
+				  projectID = _context.projectId;
+				  cultureID = _context.variant.id;
 				  var rtl = (element.config?element.config.rtl:false);
                   // Setup with initial value and disabled state
                   setupWysiwyg(element.value, rtl);  
