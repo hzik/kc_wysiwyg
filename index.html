@@ -73,7 +73,7 @@
 </head>
 <body>
     <!-- Custom element HTML -->
-    <div class="disabled_overlay"></div>
+	<div class="disabled_overlay"></div>
     <div class="wysiwyg-box">
         <section id="wysiwyg">
   
@@ -148,19 +148,23 @@
 		class Item extends BlockEmbed {
 		  static create(item) {
 			let node = super.create(item);
-			node.dataset.item = item;
-			let data = item.split(';');
-			node.innerHTML = '<div class="item-name">'+data[2]+'</div><div class="item-link"><a title="Open item" onclick="window.open(this.href)" href="https://app.kontent.ai/'+projectID+'/content-inventory/'+cultureID+'/content/'+data[1]+'">⭷</a></div>';
+			node.setAttribute('item-codename', item.codename);
+			node.setAttribute('item-id', item.id);
+			node.setAttribute('item-name', item.name);
+			node.innerHTML = '<div class="item-name">'+item.name+'</div><div class="item-link"><a title="Open item" target="_blank" href="https://app.kontent.ai/goto/edit-item/item/'+item.id+'/variant/'+cultureID+'/project/'+projectID+'">⭷</a></div>';
+			node.item = item;
 			return node;
 		  }
 		  static value(domNode) {
-			return domNode.dataset.item;
+			return domNode.item;
 		  }
 		}
 		Item.blotName = 'item';
 		Item.tagName = 'div';
 		Item.className = 'item';
-		Quill.register(Item);
+		Quill.register({
+			'formats/item': Item
+		});
 				
         var isDisabled = false;
       
@@ -192,7 +196,6 @@
 			
 			quill.on('text-change', function(delta, oldDelta, source) {
 				if (!isDisabled) {
-                    // Send updated color to Kentico Cloud
                     CustomElement.setValue(JSON.stringify(quill.getContents()));
 					updateSize();
                 }
@@ -217,7 +220,6 @@
 			// Retrieves details of the asset specified by its ID
 			const assetDetails = await CustomElement.getAssetDetails([assetId]);
 
-			console.log(assetDetails);
 			var range = quill.getSelection();
 			quill.insertEmbed((range?range.index:0), 'image', assetDetails[0].url);
 			updateSize();
@@ -233,11 +235,11 @@
 			// Retrieves details of the asset specified by its ID
 			const itemDetails = await CustomElement.getItemDetails([itemId]);
 
-			console.log(itemDetails);
 			var range = quill.getSelection();
 			var index = range?range.index:0;
-			quill.insertText(index, '\n', Quill.sources.USER);
-			quill.insertEmbed(index + 1, 'item', itemDetails[0].codename+";"+itemDetails[0].id+";"+itemDetails[0].name, Quill.sources.USER);			
+			quill.insertText(index, '\n', Quill.sources.USER);	
+			var cObj = {codename : itemDetails[0].codename, id : itemDetails[0].id, name : itemDetails[0].name};
+			quill.insertEmbed(index + 1, 'item', cObj, Quill.sources.USER);			
 			quill.setSelection(index + 2, Quill.sources.SILENT);
 			updateSize();
 		}
