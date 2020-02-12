@@ -42,7 +42,12 @@ The JSON object returned from the Deliver API matches the following signature:
       },
       { 
          "insert":{ 
-            "item":"testing_name;e8015d16-61f9-41d4-ab30-fec7b910ff0d;testing name"
+            {"item":{
+                "codename":"testing_name",
+                "id":"e8015d16-61f9-41d4-ab30-fec7b910ff0d",
+                "name":"testing name"
+                }
+             }
          }
       },
       { 
