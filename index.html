@@ -151,7 +151,7 @@
 			node.setAttribute('item-codename', item.codename);
 			node.setAttribute('item-id', item.id);
 			node.setAttribute('item-name', item.name);
-			node.innerHTML = '<div class="item-name">'+item.name+'</div><div class="item-link"><a title="Open item" target="_blank" href="https://app.kontent.ai/goto/edit-item/item/'+item.id+'/variant/'+cultureID+'/project/'+projectID+'">⭷</a></div>';
+			node.innerHTML = '<div class="item-name">'+item.name+'</div><div class="item-link"><a title="Open item" onclick="window.open(this.href)" href="https://app.kontent.ai/goto/edit-item/item/'+item.id+'/variant/'+cultureID+'/project/'+projectID+'">⭷</a></div>';
 			node.item = item;
 			return node;
 		  }
