@@ -2,11 +2,11 @@
 This Kontent custom element is based on the https://quilljs.com/ rich text editor.
 It stores content in JSON format, so it's omni-channel friendly :)
 
-![screenshot](https://amend.cz/wysiwyg/quill.png)
+![screenshot](https://kontentapp.azurewebsites.net/elements/wysiwyg/quill.png)
 
 ## Quick Setup (for testing)
 
-You can get started quickly using the currently version currently deployed to GitHub Pages. I do not recommend using this for anything other than **quick testing only**.
+You can get started quickly using the current version, which is currently deployed to GitHub Pages. I do not recommend using this for anything other than **quick testing only**.
 
 ## Deploying
 
